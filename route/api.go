@@ -32,13 +32,13 @@ func RunAPI(address string) error {
 	webUserRoutes := r.Group("/user")
 	{
 		// Show Registration Page
-		webUserRoutes.GET("/register", userHandler.ShowRegisterPage)
+		webUserRoutes.GET("/register", middleware.Already(), userHandler.ShowRegisterPage)
 
 		// Handle Registration Form Submission
 		webUserRoutes.POST("/register", userHandler.CreateUser)
 
 		// Show Login Page
-		webUserRoutes.GET("/login", userHandler.ShowLoginPage)
+		webUserRoutes.GET("/login", middleware.Already(), userHandler.ShowLoginPage)
 
 		// Handle Login Form Submission
 		webUserRoutes.POST("/login", userHandler.SignInUser)

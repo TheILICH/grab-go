@@ -6,3 +6,4 @@ docker build -t theilich/go_db:latest -f db .
 
 
 
+

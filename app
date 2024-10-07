@@ -28,4 +28,4 @@ COPY --from=builder /app/assets /app/assets
 
 EXPOSE 8080
 
-CMD ["/app/myapp"]
+# CMD ["/app/myapp"]
