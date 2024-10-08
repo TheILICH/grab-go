@@ -256,3 +256,4 @@ func (h *userHandler) DeleteUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, user)
 }
+

@@ -34,7 +34,6 @@ func (h *productHandler) GetAllProduct(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-
 	}
 
 	tmpl, err := template.ParseFiles("templates/base.html", "templates/products.html")

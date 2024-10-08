@@ -14,16 +14,11 @@ func RunAPI(address string) error {
 	productHandler := handlers.NewProductHandler()
 	orderHandler := handlers.NewOrderHandler()
 
-	// Initialize Gin router with default middleware (logger and recovery)
 	r := gin.Default()
 
 
 	// Static files (CSS, JS, images)
 	r.Static("/assets", "./assets")
-
-	// ====================
-	// Web Routes
-	// ====================
 
 	// Home Page Route
 	r.GET("/", middleware.AuthorizeJWT(), userHandler.Home)
