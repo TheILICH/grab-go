@@ -3,8 +3,10 @@ package handlers
 import (
 	"go_final/models"
 	"go_final/repositories"
+
 	"net/http"
 	"strconv"
+	"html/template"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,7 +36,21 @@ func (h *productHandler) GetAllProduct(ctx *gin.Context) {
 		return
 
 	}
-	ctx.JSON(http.StatusOK, product)
+
+	tmpl, err := template.ParseFiles("templates/base.html", "templates/products.html")
+    if err != nil {
+        http.Error(ctx.Writer, "Error loading templates", http.StatusInternalServerError)
+        return
+    }
+
+	data := gin.H{
+		"Products": product,
+	}
+
+	err = tmpl.ExecuteTemplate(ctx.Writer, "base", data) // "base" is the root template
+    if err != nil {
+        http.Error(ctx.Writer, "Error rendering template", http.StatusInternalServerError)
+    }
 
 }
 

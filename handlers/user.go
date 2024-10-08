@@ -22,6 +22,7 @@ type UserHandler interface {
 	ShowLoginPage(*gin.Context)
 	ShowRegisterPage(*gin.Context)
 	Home(*gin.Context)
+	Base(*gin.Context)
 }
 
 type userHandler struct {
@@ -42,6 +43,28 @@ func hashPassword(pass *string) {
 
 func comparePassword(dbPass, pass string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(dbPass), []byte(pass)) == nil
+}
+
+func (h *userHandler) Base(ctx *gin.Context) {
+
+	tmpl, err := template.ParseFiles("templates/base.html")
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, "Error loading template")
+		return
+	}
+
+	userID, _ := ctx.Get("userID")
+	role, _ := ctx.Get("role")
+	username, _ := ctx.Get("username")
+
+	data := gin.H{
+		"UserID": userID,
+		"Role":   role,
+		"UserName": username,
+	}
+
+	tmpl.Execute(ctx.Writer, data)	
+
 }
 
 func (h *userHandler) Home(ctx *gin.Context) {

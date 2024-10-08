@@ -27,6 +27,8 @@ func RunAPI(address string) error {
 
 	// Home Page Route
 	r.GET("/", middleware.AuthorizeJWT(), userHandler.Home)
+	r.GET("/base", middleware.AuthorizeJWT(), userHandler.Base)
+	r.GET("/products", middleware.AuthorizeJWT(), productHandler.GetAllProduct)
 
 	// User Routes for Web Pages
 	webUserRoutes := r.Group("/user")

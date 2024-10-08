@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.4 (Ubuntu 16.4-1.pgdg22.04+2)
+-- Dumped from database version 17.0
 -- Dumped by pg_dump version 17.0 (Ubuntu 17.0-1.pgdg22.04+1)
 
 SET statement_timeout = 0;
@@ -281,18 +281,18 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.order_items (id, created_at, updated_at, deleted_at, order_id, product_id, quantity, price) FROM stdin;
-7	2024-05-02 01:15:47.890982+05	2024-05-02 02:46:46.59565+05	\N	9	4	1	0
-11	2024-05-02 02:46:46.597246+05	2024-05-02 02:46:46.597246+05	\N	9	13	5	0
-6	2024-05-02 01:15:47.888426+05	2024-05-02 02:46:46.593673+05	\N	9	\N	1	0
-45	2024-05-07 01:10:12.722323+05	2024-05-07 01:10:12.722323+05	2024-05-07 01:40:43.213091+05	12	5	1	0
-46	2024-05-07 01:10:12.724795+05	2024-05-07 01:10:12.724795+05	2024-05-07 01:41:58.012038+05	12	4	1	0
-47	2024-05-07 01:27:44.976426+05	2024-05-07 01:27:44.976426+05	2024-05-07 01:43:12.159811+05	12	10	1	0
-48	2024-05-07 01:27:44.979107+05	2024-05-07 01:27:44.979107+05	2024-05-07 01:44:28.501233+05	12	4	1	0
-49	2024-05-07 01:27:44.980273+05	2024-05-07 01:27:44.980273+05	2024-05-07 01:44:28.501233+05	12	13	5	0
-50	2024-09-16 13:11:31.885073+05	2024-09-16 13:11:31.885073+05	\N	13	4	2	0
-51	2024-09-16 13:13:10.129918+05	2024-09-16 13:13:10.129918+05	\N	13	4	2	0
-52	2024-09-16 13:13:38.292452+05	2024-09-16 13:13:38.292452+05	\N	13	10	2	0
-53	2024-09-16 13:13:45.448086+05	2024-09-16 13:13:45.448086+05	\N	13	10	1	0
+7	2024-05-01 20:15:47.890982+00	2024-05-01 21:46:46.59565+00	\N	9	4	1	0
+11	2024-05-01 21:46:46.597246+00	2024-05-01 21:46:46.597246+00	\N	9	13	5	0
+6	2024-05-01 20:15:47.888426+00	2024-05-01 21:46:46.593673+00	\N	9	\N	1	0
+45	2024-05-06 20:10:12.722323+00	2024-05-06 20:10:12.722323+00	2024-05-06 20:40:43.213091+00	12	5	1	0
+46	2024-05-06 20:10:12.724795+00	2024-05-06 20:10:12.724795+00	2024-05-06 20:41:58.012038+00	12	4	1	0
+47	2024-05-06 20:27:44.976426+00	2024-05-06 20:27:44.976426+00	2024-05-06 20:43:12.159811+00	12	10	1	0
+48	2024-05-06 20:27:44.979107+00	2024-05-06 20:27:44.979107+00	2024-05-06 20:44:28.501233+00	12	4	1	0
+49	2024-05-06 20:27:44.980273+00	2024-05-06 20:27:44.980273+00	2024-05-06 20:44:28.501233+00	12	13	5	0
+50	2024-09-16 08:11:31.885073+00	2024-09-16 08:11:31.885073+00	\N	13	4	2	0
+51	2024-09-16 08:13:10.129918+00	2024-09-16 08:13:10.129918+00	\N	13	4	2	0
+52	2024-09-16 08:13:38.292452+00	2024-09-16 08:13:38.292452+00	\N	13	10	2	0
+53	2024-09-16 08:13:45.448086+00	2024-09-16 08:13:45.448086+00	\N	13	10	1	0
 \.
 
 
@@ -301,13 +301,13 @@ COPY public.order_items (id, created_at, updated_at, deleted_at, order_id, produ
 --
 
 COPY public.order_statuses (id, created_at, updated_at, deleted_at, name, description) FROM stdin;
-1	2024-04-27 12:49:59.993615+05	2024-04-27 12:49:59.993615+05	\N	Pending Review	You have made an order
-2	2024-04-27 17:51:45.134+05	2024-04-27 17:51:45.802+05	\N	Accepted	Your order is being prepared.
-3	2024-04-27 17:51:47.955+05	2024-04-27 17:51:46.96+05	\N	Ready for Delivery	Your order is ready and waiting for the courier.
-4	2024-04-27 17:51:50.308+05	2024-04-27 17:51:51.159+05	\N	Out for Delivery	Your order is on the way.
-5	2024-04-27 17:51:54.072+05	2024-04-27 17:51:52.524+05	\N	Delivered	Your order has been delivered.
-6	2024-04-27 17:51:56.045+05	2024-04-27 17:51:54.94+05	\N	Confirmed	You have confirmed the delivery.
-7	2024-04-27 17:51:57.946+05	2024-04-27 17:51:56.9+05	\N	Cancelled	You canceled the order or reported a problem.
+1	2024-04-27 07:49:59.993615+00	2024-04-27 07:49:59.993615+00	\N	Pending Review	You have made an order
+2	2024-04-27 12:51:45.134+00	2024-04-27 12:51:45.802+00	\N	Accepted	Your order is being prepared.
+3	2024-04-27 12:51:47.955+00	2024-04-27 12:51:46.96+00	\N	Ready for Delivery	Your order is ready and waiting for the courier.
+4	2024-04-27 12:51:50.308+00	2024-04-27 12:51:51.159+00	\N	Out for Delivery	Your order is on the way.
+5	2024-04-27 12:51:54.072+00	2024-04-27 12:51:52.524+00	\N	Delivered	Your order has been delivered.
+6	2024-04-27 12:51:56.045+00	2024-04-27 12:51:54.94+00	\N	Confirmed	You have confirmed the delivery.
+7	2024-04-27 12:51:57.946+00	2024-04-27 12:51:56.9+00	\N	Cancelled	You canceled the order or reported a problem.
 \.
 
 
@@ -316,9 +316,9 @@ COPY public.order_statuses (id, created_at, updated_at, deleted_at, name, descri
 --
 
 COPY public.orders (id, created_at, updated_at, deleted_at, user_id, order_status) FROM stdin;
-9	2024-05-02 01:15:47.884825+05	2024-05-02 01:15:47.884825+05	\N	10	pending
-12	2024-05-07 01:10:12.719398+05	2024-05-07 01:34:12.477617+05	2024-05-07 01:44:28.502382+05	9	accepted
-13	2024-09-16 13:11:31.845236+05	2024-09-16 13:16:15.09433+05	\N	18	accepted
+9	2024-05-01 20:15:47.884825+00	2024-05-01 20:15:47.884825+00	\N	10	pending
+12	2024-05-06 20:10:12.719398+00	2024-05-06 20:34:12.477617+00	2024-05-06 20:44:28.502382+00	9	accepted
+13	2024-09-16 08:11:31.845236+00	2024-09-16 08:16:15.09433+00	\N	18	accepted
 \.
 
 
@@ -327,11 +327,11 @@ COPY public.orders (id, created_at, updated_at, deleted_at, user_id, order_statu
 --
 
 COPY public.products (id, created_at, updated_at, deleted_at, name, quantity, description, price) FROM stdin;
-14	2024-05-07 00:57:27.083722+05	2024-05-07 00:57:27.083722+05	\N	Сэндвич 1112	20	Сэндвич с курицей	0
-5	2024-04-26 15:35:10.848272+05	2024-05-07 01:40:43.214546+05	\N	Самса с мясом	11	Обычная самса с мясом	\N
-13	\N	2024-05-07 01:44:28.500708+05	\N	Товар	5	Для проверки добавления	\N
-4	2024-04-26 15:16:05.771161+05	2024-09-16 13:13:10.129675+05	\N	Самса с курицей	0	Обычная самса с курицей	\N
-10	2024-04-26 16:39:42.360237+05	2024-09-16 13:13:45.447839+05	\N	Почааааааааааааааа	5	Сыр завернутный в тесто. Очень вкусно!	\N
+14	2024-05-06 19:57:27.083722+00	2024-05-06 19:57:27.083722+00	\N	Сэндвич 1112	20	Сэндвич с курицей	0
+5	2024-04-26 10:35:10.848272+00	2024-05-06 20:40:43.214546+00	\N	Самса с мясом	11	Обычная самса с мясом	\N
+13	\N	2024-05-06 20:44:28.500708+00	\N	Товар	5	Для проверки добавления	\N
+4	2024-04-26 10:16:05.771161+00	2024-09-16 08:13:10.129675+00	\N	Самса с курицей	0	Обычная самса с курицей	\N
+10	2024-04-26 11:39:42.360237+00	2024-09-16 08:13:45.447839+00	\N	Почааааааааааааааа	5	Сыр завернутный в тесто. Очень вкусно!	\N
 \.
 
 
@@ -340,15 +340,16 @@ COPY public.products (id, created_at, updated_at, deleted_at, name, quantity, de
 --
 
 COPY public.users (id, created_at, updated_at, deleted_at, name, email, password, role) FROM stdin;
-9	2024-04-09 18:50:54.452717+05	2024-04-09 19:45:02.857113+05	\N	Admin	admin@gmail.com	$2a$10$y8LCaKWxdlsK2eTaCW2tge9BXzb2Sc5Z2xek/P9XxSRemzGo0q9Im	admin
-14	2024-04-30 17:10:20.007615+05	2024-04-30 17:10:20.007615+05	\N	baha	baha@gmail.com	$2a$10$sjd1P.mHoFmqzcWBpGFYLu3XrGdWRYks8QDfR8YF2puqRWKA1RJwW	customer
-10	2024-04-25 14:48:21.830203+05	2024-05-03 18:45:21.350408+05	\N	ShyntasLegend	shyntas@gmail.com	$2a$10$URxXXZ6FttU5jL4TqG8ftOUbtV7rU0JI7Y07le7bTQ6Ce9jiDWVze	customer
-16	2024-09-15 19:42:01.488337+05	2024-09-15 19:42:01.488337+05	\N	iliyas	iliyas@gmail.com	$2a$10$Us1dpq/DVvgx1TtmACV/A.wE6Mu898onURYMv3Rrcy5DSqBWhESOm	customer
-17	2024-09-15 19:46:42.204471+05	2024-09-15 19:46:42.204471+05	\N	check	check@gmail.com	$2a$10$VMbOko.vPtgcnOKNn6EYG.ZPIngtiYV481/WK5wLYsIJ4FM/ZleOm	customer
-18	2024-09-16 13:06:37.30441+05	2024-09-16 13:06:37.30441+05	\N	Yelina	Yelina@gmail.com	$2a$10$qWa0MX8sish05jOkyrgR7uI8lUm8to1BLo.oA2Evj.bUIW4ucr49m	customer
-19	2024-10-07 02:15:41.441974+05	2024-10-07 02:15:41.441974+05	\N	iliyas	iliyasbek2003@gmail.com	$2a$10$GpYvi5e6UlxLh70sRyjXk.s5sWDcRRGWmumiU0upwSYW72Iyi99uy	customer
-20	2024-10-07 02:21:21.801017+05	2024-10-07 02:21:21.801017+05	\N	one	one@gmail.com	$2a$10$hU0umMZhGIti0Lsp2xt1oOIUQazOKbRvyp1qjpZemZue2hkW7TS1q	customer
-21	2024-10-07 02:49:56.545884+05	2024-10-07 02:49:56.545884+05	\N	two	two@gmail.com	$2a$10$ZTzDLPL0hkssldW9LVLPuehPy5i/kJpao9gNsiUGqIqyI2ZFm/.c2	customer
+9	2024-04-09 13:50:54.452717+00	2024-04-09 14:45:02.857113+00	\N	Admin	admin@gmail.com	$2a$10$y8LCaKWxdlsK2eTaCW2tge9BXzb2Sc5Z2xek/P9XxSRemzGo0q9Im	admin
+14	2024-04-30 12:10:20.007615+00	2024-04-30 12:10:20.007615+00	\N	baha	baha@gmail.com	$2a$10$sjd1P.mHoFmqzcWBpGFYLu3XrGdWRYks8QDfR8YF2puqRWKA1RJwW	customer
+10	2024-04-25 09:48:21.830203+00	2024-05-03 13:45:21.350408+00	\N	ShyntasLegend	shyntas@gmail.com	$2a$10$URxXXZ6FttU5jL4TqG8ftOUbtV7rU0JI7Y07le7bTQ6Ce9jiDWVze	customer
+16	2024-09-15 14:42:01.488337+00	2024-09-15 14:42:01.488337+00	\N	iliyas	iliyas@gmail.com	$2a$10$Us1dpq/DVvgx1TtmACV/A.wE6Mu898onURYMv3Rrcy5DSqBWhESOm	customer
+17	2024-09-15 14:46:42.204471+00	2024-09-15 14:46:42.204471+00	\N	check	check@gmail.com	$2a$10$VMbOko.vPtgcnOKNn6EYG.ZPIngtiYV481/WK5wLYsIJ4FM/ZleOm	customer
+18	2024-09-16 08:06:37.30441+00	2024-09-16 08:06:37.30441+00	\N	Yelina	Yelina@gmail.com	$2a$10$qWa0MX8sish05jOkyrgR7uI8lUm8to1BLo.oA2Evj.bUIW4ucr49m	customer
+19	2024-10-06 21:15:41.441974+00	2024-10-06 21:15:41.441974+00	\N	iliyas	iliyasbek2003@gmail.com	$2a$10$GpYvi5e6UlxLh70sRyjXk.s5sWDcRRGWmumiU0upwSYW72Iyi99uy	customer
+20	2024-10-06 21:21:21.801017+00	2024-10-06 21:21:21.801017+00	\N	one	one@gmail.com	$2a$10$hU0umMZhGIti0Lsp2xt1oOIUQazOKbRvyp1qjpZemZue2hkW7TS1q	customer
+21	2024-10-06 21:49:56.545884+00	2024-10-06 21:49:56.545884+00	\N	two	two@gmail.com	$2a$10$ZTzDLPL0hkssldW9LVLPuehPy5i/kJpao9gNsiUGqIqyI2ZFm/.c2	customer
+22	2024-10-07 16:40:55.773954+00	2024-10-07 16:40:55.773954+00	\N	Shadiyar	210103100@stu.sdu.edu.kz	$2a$10$0cNJedfDmjQ208x7cgPdduFFOtThLeF8HwFLJzlhmvWLRiorWlUH.	customer
 \.
 
 
@@ -384,7 +385,7 @@ SELECT pg_catalog.setval('public.products_id_seq', 14, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 21, true);
+SELECT pg_catalog.setval('public.users_id_seq', 22, true);
 
 
 --
