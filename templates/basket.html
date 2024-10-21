@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basket</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-red-600 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="images/logo.jpg" alt="Grab & Go" class="h-8 w-auto mr-3"> <!-- Add your logo path here -->
+               <a href="main.html"><span class="text-xl font-semibold">Grab & Go</span></a>
+        </div>
+        <nav class="space-x-4">
+            <a href="#" class="text-white">Home</a>
+            <a href="#" class="text-white">Basket</a>
+            <a href="#" class="text-white">@User Name</a>
+        </nav>
+    </header>
+
+    <!-- Basket Section -->
+    <div class="max-w-md mx-auto mt-10 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4">Basket</h2>
+        <form action="/checkout" method="POST"> <!-- Form action method set to POST -->
+            <div class="space-y-4">
+                <!-- Item 1 -->
+                <div class="flex items-center justify-between">
+                    <span>French fries</span>
+                    <div class="flex items-center space-x-2">
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">-</button>
+                        <span>1</span>
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">+</button>
+                        <span class="ml-4">1290 tng</span>
+                        <button type="button" class="text-red-500 p-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <!-- Repeat for additional items -->
+                <div class="flex items-center justify-between">
+                    <span>French fries</span>
+                    <div class="flex items-center space-x-2">
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">-</button>
+                        <span>1</span>
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">+</button>
+                        <span class="ml-4">1290 tng</span>
+                        <button type="button" class="text-red-500 p-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>French fries</span>
+                    <div class="flex items-center space-x-2">
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">-</button>
+                        <span>1</span>
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">+</button>
+                        <span class="ml-4">1290 tng</span>
+                        <button type="button" class="text-red-500 p-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>French fries</span>
+                    <div class="flex items-center space-x-2">
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">-</button>
+                        <span>1</span>
+                        <button type="button" class="bg-gray-300 text-gray-700 px-2 rounded">+</button>
+                        <span class="ml-4">1290 tng</span>
+                        <button type="button" class="text-red-500 p-1"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                        
+                <!-- Total -->
+                <div class="text-right mt-6">
+                    <span class="font-bold text-lg">Total: 5160 tng</span>
+                </div>
+            </div>
+
+            <!-- Pay Button -->
+            <div class="mt-6">
+                <button type="submit" class="bg-red-600 text-white w-full py-2 rounded-lg font-bold">Pay</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
