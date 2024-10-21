@@ -1,4 +1,8 @@
 grab-n-go.x10.mx {
-    tls /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/grab-n-go.x10.mx/grab-n-go.x10.mx.crt /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/grab-n-go.x10.mx/grab-n-go.x10.mx.key
+    tls {
+        cert_file /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/grab-n-go.x10.mx/grab-n-go.x10.mx.crt
+        key_file /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/grab-n-go.x10.mx/grab-n-go.x10.mx.key
+        manage_certificates off
+    }
     reverse_proxy app:8080
 }
