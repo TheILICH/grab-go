@@ -15,16 +15,16 @@ services:
     networks:
       - app-network
 
-  db:
-    image: theilich/go_db:latest
-    container_name: db
-    hostname: db
-    env_file:
-      - ./.env
-    ports:
-      - "5000:5432"
-    networks:
-      - app-network
+  # db:
+  #   image: theilich/go_db:latest
+  #   container_name: db
+  #   hostname: db
+  #   env_file:
+  #     - ./.env
+  #   ports:
+  #     - "5000:5432"
+  #   networks:
+  #     - app-network
 
   caddy:
     image: caddy:latest

@@ -1,3 +1,5 @@
+sudo docker compose down -v 
+
 sudo docker rmi -f theilich/pm:latest
 sudo docker rmi -f theilich/go_db:latest
 
@@ -9,7 +11,6 @@ sudo docker login
 sudo docker push theilich/pm:latest
 sudo docker push theilich/go_db:latest
 
-sudo docker compose down -v 
 sudo docker compose up
 
 
