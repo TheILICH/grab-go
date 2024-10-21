@@ -21,8 +21,7 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
+      - caddy_data:/data          # Use the named volume
     depends_on:
       - app
     networks:
@@ -33,4 +32,4 @@ networks:
 
 volumes:
   caddy_data:
-  caddy_config:
+    external: true               # Ensure the volume is external
