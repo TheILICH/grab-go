@@ -10,8 +10,10 @@ services:
     command: ["./wait.sh", "db", "./myapp"]
     env_file:
       - ./.env
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"  # Expose port internally to the network
+    networks:
+      - app-network
 
   db:
     image: theilich/go_db:latest
@@ -21,3 +23,27 @@ services:
       - ./.env
     ports:
       - "5000:5432"
+    networks:
+      - app-network
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -10,6 +10,7 @@ import (
 
 type OrderHandler interface {
 	OrderProducts(*gin.Context)
+	
 	UpdateOrder(*gin.Context)
 	UpdateOrderStatus(ctx *gin.Context)
 	DeleteOrder(*gin.Context)

@@ -14,6 +14,8 @@ import (
 
 type UserHandler interface {
 	SignInUser(*gin.Context)
+
+
 	CreateUser(*gin.Context)
 	GetUser(*gin.Context)
 	GetAllUsers(*gin.Context)
