@@ -1,4 +1,4 @@
-grab-and-go.x10.mx {
+grab-n-go.x10.mx {
     encode gzip
     reverse_proxy app:8080
 }
