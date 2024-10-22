@@ -1,4 +1,5 @@
 grab-n-go.x10.mx {
-    tls /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/grab-n-go.x10.mx/grab-n-go.x10.mx.crt /data/caddy/certificates/acme-v02.api.letsencrypt.org-directory/grab-n-go.x10.mx/grab-n-go.x10.mx.key
+    encode gzip
     reverse_proxy app:8080
 }
+
