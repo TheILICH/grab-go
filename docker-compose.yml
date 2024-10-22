@@ -19,8 +19,7 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
+      - grab-go_caddy_data:/data
     depends_on:
       - app
     networks:
