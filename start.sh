@@ -1,4 +1,4 @@
-sudo docker compose down -v 
+sudo docker compose down
 
 sudo docker rmi -f theilich/pm:latest
 
