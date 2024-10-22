@@ -51,28 +51,40 @@ func (h *productHandler) GetCreateProduct(ctx *gin.Context) {
 }
 
 func (h *productHandler) GetAllProduct(ctx *gin.Context) {
-	product, err := h.repo.GetAllproduct()
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	tmpl, err := template.ParseFiles("templates/base.html", "templates/products.html")
+    products, err := h.repo.GetAllproduct()
     if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Group products by category
+    categories := make(map[string][]models.Product)
+    for _, product := range products {
+        categories[product.Category] = append(categories[product.Category], product)
+    }
+
+    // Parse templates
+    tmpl, err := template.ParseFiles("templates/base.html", "templates/products.html")
+    if err != nil {
+        fmt.Printf("Error loading templates: %v\n", err)
         http.Error(ctx.Writer, "Error loading templates", http.StatusInternalServerError)
         return
     }
 
-	data := gin.H{
-		"Products": product,
-	}
-
-	err = tmpl.ExecuteTemplate(ctx.Writer, "base", data) // "base" is the root template
-    if err != nil {
-        http.Error(ctx.Writer, "Error rendering template", http.StatusInternalServerError)
+    data := gin.H{
+        "Categories": categories,
     }
 
+    // Execute the "base" template
+    err = tmpl.ExecuteTemplate(ctx.Writer, "base", data)
+    if err != nil {
+        fmt.Printf("Error rendering template: %v\n", err)
+        http.Error(ctx.Writer, "Error rendering template", http.StatusInternalServerError)
+    }
 }
+
+
+
 
 func (h *productHandler) GetProduct(ctx *gin.Context) {
 	prodStr := ctx.Param("product_id")

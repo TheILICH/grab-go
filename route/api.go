@@ -51,6 +51,7 @@ func RunAPI(address string) error {
 
 	r.POST("/products/new", productHandler.CreateProduct)
 	r.GET("/products/new", productHandler.GetCreateProduct)
+	r.GET("products/all", productHandler.GetAllProduct)	
 
 	// ====================
 	// API Routes
