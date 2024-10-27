@@ -1,0 +1,52 @@
+{{ define "content" }}
+    <div class="max-w-3xl mx-auto mt-10 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold mb-4">Your Basket</h2>
+        <form action="/pay" method="POST">
+            <div id="basket-items" class="space-y-4">
+                {{ if .Basket }}
+                    <ul>
+                        {{ range .Basket }}
+                        <li class="mb-2">
+                            <div class="flex justify-between items-center">
+                                <!-- Product Name -->
+                                <span>{{ .Product.Name }}</span>
+                                
+                                <!-- Quantity and Remove Button -->
+                                <div class="flex items-center space-x-2">
+                                    <!-- Quantity Display -->
+                                    <span class="px-2 bg-gray-300 rounded">{{ .Quantity }}</span>
+                                    
+                                    <!-- Remove Button -->
+                                    <button type="button" onclick="removeFromBasket({{ .ProductID }}); return false;" class="text-red-500 p-1">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Total Price for the Item -->
+                                <span>{{ multiply .Product.Price .Quantity }} tng</span>
+                            </div>
+                        </li>
+                        {{ end }}
+                    </ul>
+                    
+                    <!-- Total Amount -->
+                    <div class="flex justify-between font-semibold mt-4">
+                        <span>Total:</span>
+                        <span id="basket-total">{{ calculateTotal .Basket }} tng</span>
+                    </div>
+                {{ else }}
+                    <p>Your basket is empty.</p>
+                {{ end }}
+            </div>
+
+            <!-- Pay Button -->
+            <div class="mt-6">
+                <button type="submit" id="pay" class="bg-red-600 text-white w-full py-2 rounded-lg font-bold hover:bg-red-700">Pay</button>
+            </div>
+        </form>
+    </div>
+{{ end }}
+
+{{ define "basket" }}
+    {{/* No basket sidebar on the dedicated basket page */}}
+{{ end }}

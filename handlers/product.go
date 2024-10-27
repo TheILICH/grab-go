@@ -12,10 +12,11 @@ import (
 
 	"bytes"
     "fmt"
-    "io/ioutil"
+    "io"
     "mime/multipart"
     "path/filepath"
     "time"
+    "sort"
 
     "github.com/aws/aws-sdk-go/aws"
     "github.com/aws/aws-sdk-go/aws/session"
@@ -29,17 +30,95 @@ type ProductHandler interface {
 	GetCreateProduct(*gin.Context)
 	UpdateProduct(*gin.Context)
 	DeleteProduct(*gin.Context)
+    UpdateBasket(*gin.Context)
+    AddToBasket(*gin.Context)
+    GetBasket(*gin.Context)
 }
 
 type productHandler struct {
-	repo repositories.ProductRepository
+    repo repositories.ProductRepository
+    basketRepo repositories.BasketRepository
 }
 
 func NewProductHandler() ProductHandler {
 	return &productHandler{
 		repo: repositories.NewProductRepository(),
+        basketRepo: repositories.NewBasketRepository(),
 	}
 }
+
+func (h *productHandler) GetBasket(ctx *gin.Context) {
+    // Extract userID using the helper function
+    userIDInterface, exists := ctx.Get("userID")
+    var userID uint
+    if exists {
+        switch v := userIDInterface.(type) {
+        case float64:
+            userID = uint(v)
+        case uint:
+            userID = v
+        case int:
+            userID = uint(v)
+        default:
+            fmt.Printf("Unexpected type for userID: %T\n", v)
+            userID = 0
+        }
+    } else {
+        // Handle unauthenticated users
+        userID = 0
+    }
+
+    basket, err := h.basketRepo.GetBasket(userID)
+    if err != nil {
+        ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve basket"})
+        return
+    }
+
+    // Calculate total
+    total := 0
+    for _, item := range basket.BasketItems {
+        total += item.Product.Price * item.Quantity
+    }
+
+    // Define template functions if not already defined globally
+    funcMap := template.FuncMap{
+        "multiply": func(a, b int) int {
+            return a * b
+        },
+        "calculateTotal": func(items []models.BasketItem) int {
+            total := 0
+            for _, item := range items {
+                total += item.Product.Price * item.Quantity
+            }
+            return total
+        },
+    }
+
+    // Parse templates with functions
+    tmpl, err := template.New("base.html").Funcs(funcMap).ParseFiles("templates/base.html", "templates/basket.go.tmpl")
+    if err != nil {
+        fmt.Printf("Error loading templates: %v\n", err)
+        http.Error(ctx.Writer, "Error loading templates", http.StatusInternalServerError)
+        return
+    }
+
+    sort.Slice(basket.BasketItems, func(i, j int) bool {
+        return basket.BasketItems[i].Product.Name < basket.BasketItems[j].Product.Name
+    })
+
+    data := gin.H{
+        "Basket":   basket.BasketItems,
+        "Username": ctx.GetString("username"),
+    }
+
+    // Execute the "base" template with "basket.gohtml" as the content
+    err = tmpl.ExecuteTemplate(ctx.Writer, "base", data)
+    if err != nil {
+        fmt.Printf("Error rendering template: %v\n", err)
+        http.Error(ctx.Writer, "Error rendering template", http.StatusInternalServerError)
+    }
+}
+
 
 func (h *productHandler) GetCreateProduct(ctx *gin.Context) {
 	tmpl, err := template.ParseFiles("templates/new_product.html")
@@ -57,14 +136,73 @@ func (h *productHandler) GetAllProduct(ctx *gin.Context) {
         return
     }
 
+    // Safely retrieve userID from context
+    userIDInterface, exists := ctx.Get("userID")
+    var userID uint
+    if exists {
+        switch v := userIDInterface.(type) {
+        case float64:
+            userID = uint(v)
+        case uint:
+            userID = v
+        case int:
+            userID = uint(v)
+        default:
+            fmt.Printf("Unexpected type for userID: %T\n", v)
+            userID = 0
+        }
+    } else {
+        // Handle unauthenticated users
+        userID = 0
+    }
+
+    // Safely retrieve username from context
+    usernameInterface, _ := ctx.Get("username")
+    var username string
+    if usernameInterface != nil {
+        username, _ = usernameInterface.(string)
+    } else {
+        username = "Guest"
+    }
+
     // Group products by category
     categories := make(map[string][]models.Product)
     for _, product := range products {
         categories[product.Category] = append(categories[product.Category], product)
     }
 
-    // Parse templates
-    tmpl, err := template.ParseFiles("templates/base.html", "templates/products.html")
+    // Get user's basket
+    var basket models.Basket
+    if userID != 0 {
+        basket, err = h.basketRepo.GetBasket(userID)
+        if err != nil {
+            fmt.Printf("Error getting basket: %v\n", err)
+            basket = models.Basket{}
+        }
+    } else {
+        basket = models.Basket{}
+    }
+
+    sort.Slice(basket.BasketItems, func(i, j int) bool {
+        return basket.BasketItems[i].Product.Name < basket.BasketItems[j].Product.Name
+    })
+
+    // Define template functions
+    funcMap := template.FuncMap{
+        "multiply": func(a, b int) int {
+            return a * b
+        },
+        "calculateTotal": func(items []models.BasketItem) int {
+            total := 0
+            for _, item := range items {
+                total += item.Product.Price * item.Quantity
+            }
+            return total
+        },
+    }
+
+    // Parse templates with functions
+    tmpl, err := template.New("base.html").Funcs(funcMap).ParseFiles("templates/base.html", "templates/products.go.tmpl")
     if err != nil {
         fmt.Printf("Error loading templates: %v\n", err)
         http.Error(ctx.Writer, "Error loading templates", http.StatusInternalServerError)
@@ -73,6 +211,8 @@ func (h *productHandler) GetAllProduct(ctx *gin.Context) {
 
     data := gin.H{
         "Categories": categories,
+        "Username":   username,
+        "Basket":     basket.BasketItems,
     }
 
     // Execute the "base" template
@@ -82,6 +222,112 @@ func (h *productHandler) GetAllProduct(ctx *gin.Context) {
         http.Error(ctx.Writer, "Error rendering template", http.StatusInternalServerError)
     }
 }
+
+
+
+
+func (h *productHandler) AddToBasket(c *gin.Context) {
+    userIDInterface, exists := c.Get("userID")
+    var userID uint
+    if exists {
+        switch v := userIDInterface.(type) {
+        case float64:
+            userID = uint(v)
+        case uint:
+            userID = v
+        case int:
+            userID = uint(v)
+        default:
+            fmt.Printf("Unexpected type for userID: %T\n", v)
+            userID = 0
+        }
+    } else {
+        // Handle unauthenticated users
+        userID = 0
+    }
+
+
+    var requestData struct {
+        ProductID uint `json:"product_id"`
+    }
+    if err := c.ShouldBindJSON(&requestData); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+        return
+    }
+
+    err := h.basketRepo.UpdateBasket(userID, requestData.ProductID, 1)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add to basket"})
+        return
+    }
+
+    // Get updated basket
+    basket, err := h.basketRepo.GetBasket(userID)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve basket"})
+        return
+    }
+
+    sort.Slice(basket.BasketItems, func(i, j int) bool {
+        return basket.BasketItems[i].Product.Name < basket.BasketItems[j].Product.Name
+    })
+
+    c.JSON(http.StatusOK, gin.H{"basket": basket.BasketItems})
+}
+
+
+func (h *productHandler) UpdateBasket(c *gin.Context) {
+    userIDInterface, exists := c.Get("userID")
+    var userID uint
+    if exists {
+        switch v := userIDInterface.(type) {
+        case float64:
+            userID = uint(v)
+        case uint:
+            userID = v
+        case int:
+            userID = uint(v)
+        default:
+            fmt.Printf("Unexpected type for userID: %T\n", v)
+            userID = 0
+        }
+    } else {
+        // Handle unauthenticated users
+        userID = 0
+    }
+
+
+    var requestData struct {
+        ProductID uint `json:"product_id"`
+        Cnt       int  `json:"cnt"`
+    }
+    if err := c.ShouldBindJSON(&requestData); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data"})
+        return
+    }
+
+    err := h.basketRepo.UpdateBasket(userID, requestData.ProductID, requestData.Cnt)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update basket"})
+        return
+    }
+
+    // Get updated basket
+    basket, err := h.basketRepo.GetBasket(userID)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve basket"})
+        return
+    }
+
+    sort.Slice(basket.BasketItems, func(i, j int) bool {
+        return basket.BasketItems[i].Product.Name < basket.BasketItems[j].Product.Name
+    })
+
+    c.JSON(http.StatusOK, gin.H{"basket": basket.BasketItems})
+}
+
+
+
 
 
 
@@ -113,7 +359,7 @@ func uploadToS3(file multipart.File, filename string) (string, error) {
     }
 
     // Read the file content
-    fileBytes, err := ioutil.ReadAll(file)
+    fileBytes, err := io.ReadAll(file)
     if err != nil {
         return "", err
     }

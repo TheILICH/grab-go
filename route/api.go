@@ -22,8 +22,22 @@ func RunAPI(address string) error {
 
 	// Home Page Route
 	r.GET("/", middleware.AuthorizeJWT(), userHandler.Home)
-	r.GET("/base", middleware.AuthorizeJWT(), userHandler.Base)
-	r.GET("/products", middleware.AuthorizeJWT(), productHandler.GetAllProduct)
+
+	// r.POST("/products/new", productHandler.CreateProduct)
+	// r.GET("/products/new", productHandler.GetCreateProduct)
+	// r.GET("products/all", productHandler.GetAllProduct)	
+
+	products := r.Group("products") 
+	{
+		products.GET("/all", middleware.AuthorizeJWT(), productHandler.GetAllProduct)
+		products.GET("new", middleware.AuthorizeJWT(), middleware.CheckAdmin(), productHandler.GetCreateProduct)
+		products.POST("new", middleware.AuthorizeJWT(), middleware.CheckAdmin(), productHandler.CreateProduct)
+	}
+
+
+	r.POST("/add-to-basket", middleware.AuthorizeJWT(), productHandler.AddToBasket)
+	r.POST("/update-basket", middleware.AuthorizeJWT(), productHandler.UpdateBasket)
+	r.GET("/basket", middleware.AuthorizeJWT(), productHandler.GetBasket)
 
 	// User Routes for Web Pages
 	webUserRoutes := r.Group("/user")
@@ -48,10 +62,6 @@ func RunAPI(address string) error {
 			ctx.Redirect(http.StatusFound, "/")
 		})
 	}
-
-	r.POST("/products/new", productHandler.CreateProduct)
-	r.GET("/products/new", productHandler.GetCreateProduct)
-	r.GET("products/all", productHandler.GetAllProduct)	
 
 	// ====================
 	// API Routes

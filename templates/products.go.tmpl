@@ -1,0 +1,62 @@
+{{ define "content" }}
+            <div class="flex">
+        <!-- Content -->
+        <div class="w-3/4">
+    {{ range $category, $products := .Categories }}
+    <section class="p-6">
+        <h2 class="text-xl font-semibold mb-4">{{ $category }}</h2>
+        <div class="grid grid-cols-3 gap-6">
+            {{ range $products }}
+            <div class="bg-white p-4 rounded-lg shadow-lg">
+                <img src="{{ .Image }}" alt="{{ .Name }}" class="rounded-md w-full h-60 mb-4 object-cover">
+                <h3 class="text-lg font-semibold">{{ .Name }}</h3>
+                <p class="text-gray-500">{{ .Price }} tng</p>
+                <button onclick="addToBasket({{ .ID }})" class="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Add</button>
+
+            </div>
+            {{ end }}
+        </div>
+    </section>
+    </div>
+    {{ end }}
+{{ end }}
+
+{{ define "basket" }}
+        <div class="w-1/4">
+            <div class="sticky top-1">
+                <div class="bg-white p-5 h-screen overflow-y-auto">
+                    <h1 class="text-lg font-semibold mb-4">Basket</h2>
+                    <!-- Basket items will be listed here -->
+    <div id="basket-items">
+        {{ if .Basket }}
+            <ul>
+                {{ range .Basket }}
+                <li class="mb-2">
+                    <div class="flex justify-between items-center">
+                        <span>{{ .Product.Name }}</span>
+                        <div class="flex items-center">
+                            <button onclick="updateBasket({{ .ProductID }}, -1)" class="px-2 bg-gray-300 rounded">-</button>
+                            <span class="px-2">{{ .Quantity }}</span>
+                            <button onclick="updateBasket({{ .ProductID }}, 1)" class="px-2 bg-gray-300 rounded">+</button>
+                        </div>
+                        <span>{{ multiply .Product.Price .Quantity }} tng</span>
+                    </div>
+                </li>
+                {{ end }}
+            </ul>
+            <div class="mt-4">
+                <div class="flex justify-between font-semibold">
+                    <span>Total:</span>
+                    <span id="basket-total">{{ calculateTotal .Basket }} tng</span>
+                </div>
+                <a href="/basket" class="inline-block mt-4 w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200 text-center font-bold">Go To Basket</a>
+
+            </div>
+        {{ else }}
+            <p>Your basket is empty.</p>
+        {{ end }}
+    </div>
+                    </div>
+            </div>
+        </div>
+{{ end }}

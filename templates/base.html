@@ -17,23 +17,117 @@
     <!-- Navigation -->
     <header class="bg-red-600 text-white p-4 flex justify-between items-center">
         <div class="flex items-center space-x-4">
-            <img src="https://grab-n-go.x10.mx/assets/logo.jpg" alt="Grab & Go Logo" class="w-12 h-12">
+            <img src="https://grab-n-go.s3.us-east-1.amazonaws.com/images/logo.jpg" alt="Grab & Go Logo" class="w-12 h-12">
             <span class="text-xl font-bold">Grab & Go</span>
         </div>
         <nav class="space-x-6">
-            <a href="#" class="hover:text-gray-200">Home</a>
-            <a href="/basket" class="hover:text-gray-200">Basket</a>
-            <a href="#" class="hover:text-gray-200">Danelya</a>
+            <a href="/" class="hover:text-gray-200">Home</a>
+            <a href="/basket/" class="hover:text-gray-200">Basket</a>
+            <a href="/profile" class="hover:text-gray-200">{{ .Username }}</a>
+            <a href="/user/logout">Logout</a>
         </nav>
     </header>
 
-    <!-- Content -->
-    {{ block "content" . }}{{ end }}
+    <!-- Main Content Area -->
+            {{ block "content" . }}{{ end }}
+
+        <!-- Basket -->
+            {{ block "basket" . }}{{ end }}
 
     <!-- Include any scripts here -->
-    <script>
-        // JavaScript code, if any
-    </script>
+<script>
+    async function addToBasket(productId) {
+        try {
+            const response = await fetch('/add-to-basket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include CSRF token if necessary
+                },
+                body: JSON.stringify({ product_id: productId })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                // Update the basket display
+                updateBasketDisplay(data.basket);
+            } else {
+                alert(data.error || 'Failed to add to basket');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function updateBasket(productId, cnt) {
+        try {
+            const response = await fetch('/update-basket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Include CSRF token if necessary
+                },
+                body: JSON.stringify({ product_id: productId, cnt: cnt })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                // Update the basket display
+                updateBasketDisplay(data.basket);
+            } else {
+                alert(data.error || 'Failed to update basket');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function updateBasketDisplay(basketItems) {
+        const basketDiv = document.getElementById('basket-items');
+        if (!basketDiv) return;
+
+        if (basketItems.length === 0) {
+            basketDiv.innerHTML = '<p>Your basket is empty.</p>';
+            return;
+        }
+
+        let total = 0;
+        let basketHtml = '<ul>';
+        basketItems.forEach(item => {
+            const itemTotal = item.product.price * item.quantity;
+            total += itemTotal;
+            basketHtml += `
+                <li class="mb-2">
+                    <div class="flex justify-between items-center">
+                        <span>${item.product.name}</span>
+                        <div class="flex items-center">
+                            <button onclick="updateBasket(${item.product_id}, -1)" class="px-2 bg-gray-300 rounded">-</button>
+                            <span class="px-2">${item.quantity}</span>
+                            <button onclick="updateBasket(${item.product_id}, 1)" class="px-2 bg-gray-300 rounded">+</button>
+                        </div>
+                        <span>${itemTotal} tng</span>
+                    </div>
+                </li>
+            `;
+        });
+        basketHtml += '</ul>';
+        basketHtml += `
+            <div class="mt-4">
+                <div class="flex justify-between font-semibold">
+                    <span>Total:</span>
+                    <span id="basket-total">${total} tng</span>
+                </div>
+                <a id="checkout" href="/basket" class="inline-block mt-4 w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200 text-center font-bold">Go To Basket</a>
+            </div>
+        `;
+        basketDiv.innerHTML = basketHtml;
+    }
+
+    // document.getElementById("checkout").onclick = function () {
+    //     window.location.href = "/basket";
+    // };
+
+</script>
+
+
 </body>
 </html>
 {{ end }}
