@@ -1,16 +1,31 @@
 version: '3.8'
+
 services:
   app:
+    depends_on:
+      - db
     image: theilich/pm:latest
     container_name: app
     hostname: app
-    command: ["./myapp"]
+    command: ["./wait.sh", "db", "./myapp"]
     env_file:
       - ./.env
     expose:
-      - "8080"
+      - "8080"  # Expose port internally to the network
     networks:
       - app-network
+
+  db:
+    image: theilich/go_db:latest
+    container_name: db
+    hostname: db
+    env_file:
+      - ./.env
+    ports:
+      - "5000:5432"
+    networks:
+      - app-network
+
   caddy:
     image: caddy:latest
     container_name: caddy
@@ -24,8 +39,11 @@ services:
       - app
     networks:
       - app-network
+
 networks:
   app-network:
+
 volumes:
   grab-go_caddy_data:
     external: true
+  db_data:
