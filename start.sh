@@ -1,17 +1,17 @@
-sudo docker compose down
+docker compose down
 
-sudo docker rmi -f theilich/pm:latest
-sudo docker rmi -f theilich/go_db:latest
+docker rmi -f theilich/pm:latest
+docker rmi -f theilich/go_db:latest
 
-sudo docker build -t theilich/pm:latest -f app .
-sudo docker build -t theilich/go_db:latest -f db .
+docker build -t theilich/pm:latest -f app .
+docker build -t theilich/go_db:latest -f db .
 
-sudo docker login
+docker login
 
-sudo docker push theilich/pm:latest
-sudo docker push theilich/go_db:latest
+docker push theilich/pm:latest
+docker push theilich/go_db:latest
 
-sudo docker compose up
+docker compose up
 
 
 
