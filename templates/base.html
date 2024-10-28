@@ -28,11 +28,10 @@
         </nav>
     </header>
 
-    <!-- Main Content Area -->
-    {{ block "content" . }}{{ end }}
-
-    <!-- Basket -->
-    {{ block "basket" . }}{{ end }}
+    <div class="flex">
+        {{ block "content" . }}{{ end }}
+        {{ block "basket" . }}{{ end }}
+    </div>
 
     <!-- Include any scripts here -->
     <script>
