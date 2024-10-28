@@ -29,105 +29,100 @@
     </header>
 
     <!-- Main Content Area -->
-            {{ block "content" . }}{{ end }}
+    {{ block "content" . }}{{ end }}
 
-        <!-- Basket -->
-            {{ block "basket" . }}{{ end }}
+    <!-- Basket -->
+    {{ block "basket" . }}{{ end }}
 
     <!-- Include any scripts here -->
-<script>
-    async function addToBasket(productId) {
-        try {
-            const response = await fetch('/add-to-basket', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Include CSRF token if necessary
-                },
-                body: JSON.stringify({ product_id: productId })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                // Update the basket display
-                updateBasketDisplay(data.basket);
-            } else {
-                alert(data.error || 'Failed to add to basket');
+    <script>
+        async function addToBasket(productId) {
+            try {
+                const response = await fetch('/add-to-basket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ product_id: productId }),
+                    credentials: 'include' // Ensure cookies are sent with the request
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    updateBasketDisplay(data.basket);
+                } else {
+                    console.error('Server error:', data);
+                    alert(data.error || 'Failed to add to basket');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('Network error occurred. Please try again.');
             }
-        } catch (error) {
-            console.error('Error:', error);
         }
-    }
 
-    async function updateBasket(productId, cnt) {
-        try {
-            const response = await fetch('/update-basket', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Include CSRF token if necessary
-                },
-                body: JSON.stringify({ product_id: productId, cnt: cnt })
-            });
-            const data = await response.json();
-            if (response.ok) {
-                // Update the basket display
-                updateBasketDisplay(data.basket);
-            } else {
-                alert(data.error || 'Failed to update basket');
+        async function updateBasket(productId, cnt) {
+            try {
+                const response = await fetch('/update-basket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ product_id: productId, cnt: cnt }),
+                    credentials: 'include' // Ensure cookies are sent with the request
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    updateBasketDisplay(data.basket);
+                } else {
+                    console.error('Server error:', data);
+                    alert(data.error || 'Failed to update basket');
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                alert('Network error occurred. Please try again.');
             }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    function updateBasketDisplay(basketItems) {
-        const basketDiv = document.getElementById('basket-items');
-        if (!basketDiv) return;
-
-        if (basketItems.length === 0) {
-            basketDiv.innerHTML = '<p>Your basket is empty.</p>';
-            return;
         }
 
-        let total = 0;
-        let basketHtml = '<ul>';
-        basketItems.forEach(item => {
-            const itemTotal = item.product.price * item.quantity;
-            total += itemTotal;
-            basketHtml += `
-                <li class="mb-2">
-                    <div class="flex justify-between items-center">
-                        <span>${item.product.name}</span>
-                        <div class="flex items-center">
-                            <button onclick="updateBasket(${item.product_id}, -1)" class="px-2 bg-gray-300 rounded">-</button>
-                            <span class="px-2">${item.quantity}</span>
-                            <button onclick="updateBasket(${item.product_id}, 1)" class="px-2 bg-gray-300 rounded">+</button>
+        function updateBasketDisplay(basketItems) {
+            const basketDiv = document.getElementById('basket-items');
+            if (!basketDiv) return;
+
+            if (basketItems.length === 0) {
+                basketDiv.innerHTML = '<p>Your basket is empty.</p>';
+                return;
+            }
+
+            let total = 0;
+            let basketHtml = '<ul>';
+            basketItems.forEach(item => {
+                const itemTotal = item.product.price * item.quantity;
+                total += itemTotal;
+                basketHtml += `
+                    <li class="mb-2">
+                        <div class="flex justify-between items-center">
+                            <span>${item.product.name}</span>
+                            <div class="flex items-center">
+                                <button onclick="updateBasket(${item.product_id}, -1)" class="px-2 bg-gray-300 rounded">-</button>
+                                <span class="px-2">${item.quantity}</span>
+                                <button onclick="updateBasket(${item.product_id}, 1)" class="px-2 bg-gray-300 rounded">+</button>
+                            </div>
+                            <span>${itemTotal} tng</span>
                         </div>
-                        <span>${itemTotal} tng</span>
+                    </li>
+                `;
+            });
+            basketHtml += '</ul>';
+            basketHtml += `
+                <div class="mt-4">
+                    <div class="flex justify-between font-semibold">
+                        <span>Total:</span>
+                        <span id="basket-total">${total} tng</span>
                     </div>
-                </li>
-            `;
-        });
-        basketHtml += '</ul>';
-        basketHtml += `
-            <div class="mt-4">
-                <div class="flex justify-between font-semibold">
-                    <span>Total:</span>
-                    <span id="basket-total">${total} tng</span>
+                    <a id="checkout" href="/basket" class="inline-block mt-4 w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200 text-center font-bold">Go To Basket</a>
                 </div>
-                <a id="checkout" href="/basket" class="inline-block mt-4 w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200 text-center font-bold">Go To Basket</a>
-            </div>
-        `;
-        basketDiv.innerHTML = basketHtml;
-    }
-
-    // document.getElementById("checkout").onclick = function () {
-    //     window.location.href = "/basket";
-    // };
-
-</script>
-
-
+            `;
+            basketDiv.innerHTML = basketHtml;
+        }
+    </script>
 </body>
 </html>
 {{ end }}
