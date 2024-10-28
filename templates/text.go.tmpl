@@ -12,8 +12,9 @@
     </div>
 
 <script>
-    // Establish WebSocket connection
-    var ws = new WebSocket("ws://" + window.location.host + "/ws");
+    // Determine the correct WebSocket protocol
+    var ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+    var ws = new WebSocket(ws_scheme + "://" + window.location.host + "/ws");
 
     ws.onopen = function() {
         console.log("WebSocket connection opened");
@@ -34,6 +35,7 @@
         ws.send(text);
     });
 </script>
+
 
 {{ end }}
 
