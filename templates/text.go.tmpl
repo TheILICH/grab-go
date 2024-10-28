@@ -1,0 +1,42 @@
+{{ define "content" }}
+
+    <div class="bg-gray-100 pt-4">
+        <input type="text" id="input-text" class="mt-4 p-2 border border-gray-400 rounded mx-auto block" value="{{ .S }}">
+    </div>
+
+    <!-- Existing content with h1 remains unchanged -->
+    <div class="flex items-start justify-center min-h-screen bg-gray-100 pt-24">
+        <h1 id="display-text" class="text-8xl font-extrabold text-center text-gray-800">
+            {{ .S }}
+        </h1>
+    </div>
+
+<script>
+    // Establish WebSocket connection
+    var ws = new WebSocket("ws://" + window.location.host + "/ws");
+
+    ws.onopen = function() {
+        console.log("WebSocket connection opened");
+    };
+
+    ws.onmessage = function(event) {
+        var receivedMsg = event.data;
+        document.getElementById("display-text").innerText = receivedMsg;
+    };
+
+    ws.onclose = function() {
+        console.log("WebSocket connection closed");
+    };
+
+    // Send input text to the server on every keystroke
+    document.getElementById("input-text").addEventListener("input", function() {
+        var text = this.value;
+        ws.send(text);
+    });
+</script>
+
+{{ end }}
+
+{{ define "basket" }}
+<!-- empty -->
+{{ end }}

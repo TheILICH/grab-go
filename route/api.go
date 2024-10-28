@@ -16,16 +16,11 @@ func RunAPI(address string) error {
 
 	r := gin.Default()
 
-
-	// Static files (CSS, JS, images)
 	r.Static("/assets", "./assets")
 
-	// Home Page Route
+	r.GET("/text/:s", userHandler.Text)
+	r.GET("/ws", userHandler.WSHandler)
 	r.GET("/", middleware.AuthorizeJWT(), userHandler.Home)
-
-	// r.POST("/products/new", productHandler.CreateProduct)
-	// r.GET("/products/new", productHandler.GetCreateProduct)
-	// r.GET("products/all", productHandler.GetAllProduct)	
 
 	products := r.Group("products") 
 	{

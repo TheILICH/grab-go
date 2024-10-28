@@ -6,16 +6,17 @@ import (
 	
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/gorilla/websocket"
 
 	"net/http"
+	"log"
 	"strconv"
+	"strings"
 	"html/template"
 )
 
 type UserHandler interface {
 	SignInUser(*gin.Context)
-
-
 	CreateUser(*gin.Context)
 	GetUser(*gin.Context)
 	GetAllUsers(*gin.Context)
@@ -25,16 +26,72 @@ type UserHandler interface {
 	ShowRegisterPage(*gin.Context)
 	Home(*gin.Context)
 	Base(*gin.Context)
+	Text(*gin.Context)	
+	WSHandler(*gin.Context)
 }
 
 type userHandler struct {
 	repo repositories.UserRepository
 }
 
+var upgrader = websocket.Upgrader{
+    ReadBufferSize:  1024,
+    WriteBufferSize: 1024,
+    CheckOrigin: func(r *http.Request) bool {
+        return true
+    },
+}
+
 func NewUserHandler() UserHandler {
 	return &userHandler{
 		repo: repositories.NewUserRepository(),
 	}
+}
+
+func (h *userHandler) WSHandler(ctx *gin.Context) {
+
+	// Upgrade initial GET request to a WebSocket
+    ws, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
+    if err != nil {
+        log.Printf("Failed to upgrade to WebSocket: %v", err)
+        return
+    }
+    defer ws.Close()
+
+    for {
+        // Read message from client
+        _, msg, err := ws.ReadMessage()
+        if err != nil {
+            log.Printf("Error reading message: %v", err)
+            break
+        }
+
+        // Echo message back to client
+        err = ws.WriteMessage(websocket.TextMessage, msg)
+        if err != nil {
+            log.Printf("Error writing message: %v", err)
+            break
+        }
+    }
+
+}
+
+func (h *userHandler) Text(ctx *gin.Context) {
+
+	s := ctx.Param("s")
+	s = strings.Trim(s, "/")
+
+	tmpl, err := template.New("base.html").ParseFiles("templates/base.html", "templates/text.go.tmpl")
+	if err != nil {
+		ctx.String(http.StatusInternalServerError, "Error when executing parsed(merged) base.html AND text.go.tmpl")
+	}
+
+	data := gin.H{
+		"S": s,
+	}
+
+	tmpl.ExecuteTemplate(ctx.Writer, "base", data)
+
 }
 
 func hashPassword(pass *string) {
