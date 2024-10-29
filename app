@@ -25,7 +25,6 @@ COPY --from=builder /app/templates /app/templates
 COPY --from=builder /app/views /app/views
 # If you have an assets directory, include it as well
 COPY --from=builder /app/assets /app/assets
-COPY --from=builder /app/.env /app/.env
 
 EXPOSE 8080
 
